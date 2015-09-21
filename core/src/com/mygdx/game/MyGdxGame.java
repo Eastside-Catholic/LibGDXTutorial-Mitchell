@@ -158,6 +158,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
@@ -170,6 +171,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		// TODO Auto-generated method stub
+		System.out.println(screenX + " " + screenY);
+		posX = screenX;
+		posY = Gdx.graphics.getHeight()-screenY;
 		return false;
 	}
 
