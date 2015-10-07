@@ -8,6 +8,7 @@ public class Hero extends Character {
 	
 	public Hero(float x1, float y1, float vx1, float vy1) {
 		super(x1, y1, vx1, vy1, img);
+		this.type = "hero";
 		// TODO Auto-generated constructor stub
 	}
 	

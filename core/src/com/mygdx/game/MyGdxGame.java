@@ -43,7 +43,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     
 	@Override
 	public void create () {
-		Gdx.graphics.setDisplayMode(500, 200, false);
+		Gdx.graphics.setDisplayMode(800, 400, false);
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
 		batch = new SpriteBatch();
@@ -95,10 +95,14 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		}
 	}
 	
+	public void checkAlive(){
+		
+	}
+	
 	public void makeBack(){
 		elapsedTime += Gdx.graphics.getDeltaTime();
-		for(int i = 0; i < 500; i += 50){
-			for(int j = 0; j < 200; j+= 50){
+		for(int i = 0; i < width; i += 50){
+			for(int j = 0; j < height; j+= 50){
 				 batch.draw(animation.getKeyFrame(elapsedTime, true), i, j);		
 			}
 		}

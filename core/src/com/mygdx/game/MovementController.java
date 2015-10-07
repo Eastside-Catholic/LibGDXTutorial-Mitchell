@@ -13,6 +13,7 @@ public class MovementController {
 	float heroY;
 	Hero hero;
 	int i;
+	int fireRate = 20;
 	float height;
 	float width;
 	boolean[] stuck;
@@ -26,15 +27,16 @@ public class MovementController {
 	}
 	
 	public void control(){
+		System.out.println(i);
 		hero = (Hero) characters.get(0);
 		heroX = hero.getX();
 		heroY = hero.getY();
 		Bullet z;
 		
 		stuck = hero.getStuck();
-		for(int i = 0; i < stuck.length; i++){
+		/*for(int i = 0; i < stuck.length; i++){
 			System.out.println(stuck[i]);
-		}
+		}*/
 		if(Gdx.input.isKeyPressed(Keys.LEFT)){
 			hero.setVectorX(-1.0f);
 			
@@ -58,55 +60,55 @@ public class MovementController {
 		}
 		
 		if(Gdx.input.isKeyPressed(Keys.W)){
-			if(i > 0 && i <= 10){
+			if(i > 0 && i <= fireRate){
 				i++;
-			}else if(i >10){
+			}else if(i >fireRate){
 				i = 0;
 			}else{
-				z = new Bullet(heroX + hero.getWidth()/2,heroY + hero.getHeight(), 0f, 10f);
+				z = new Bullet(heroX + hero.getWidth()/2 - 6,heroY + hero.getHeight(), 0f, 10f);
 				characters.add(z);
 				i++;
 			}
 		}
 		
 		if(Gdx.input.isKeyPressed(Keys.A)){
-			if(i > 0 && i <= 10){
+			if(i > 0 && i <= fireRate){
 				i++;
-			}else if(i >10){
+			}else if(i >fireRate){
 				i = 0;
 			}else{
-				z = new Bullet(heroX + hero.getWidth()/2,heroY + hero.getHeight(), -10.0f, 0f);
+				z = new Bullet(heroX -12, heroY + hero.getHeight()/2 - 6 , -10.0f, 0f);
 				characters.add(z);
 				i++;
 			}
 		}
 				
 		if(Gdx.input.isKeyPressed(Keys.S)){
-			if(i > 0 && i <= 10){
+			if(i > 0 && i <= fireRate){
 				i++;
-			}else if(i >10){
+			}else if(i > fireRate){
 				i = 0;
 			}else{
-				z = new Bullet(heroX + hero.getWidth()/2,heroY + hero.getHeight(), 0f, -10f);
+				z = new Bullet(heroX + hero.getWidth()/2 - 6,heroY - 12, 0f, -10f);
 				characters.add(z);
 				i ++;
 			}
 		}
 		
 		if(Gdx.input.isKeyPressed(Keys.D)){
-			if(i > 0 && i <= 10){
+			if(i > 0 && i <= fireRate){
 				i++;
-			}else if(i >10){
+			}else if(i > fireRate){
 				i = 0;
 			}else{
-				z = new Bullet(heroX + hero.getWidth()/2,heroY + hero.getHeight(), 10f, 0);
+				z = new Bullet(heroX + hero.getWidth(),heroY + hero.getHeight()-16, 10f, 0);
 				characters.add(z);
 				i++;
 			}
 		}
 		
-		if(!Gdx.input.isKeyPressed(Keys.UP) && !Gdx.input.isKeyPressed(Keys.DOWN) && 
-				!Gdx.input.isKeyPressed(Keys.LEFT) && !Gdx.input.isKeyPressed(Keys.RIGHT)){
+		if(!Gdx.input.isKeyPressed(Keys.W) && !Gdx.input.isKeyPressed(Keys.S) && 
+				!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)){
 			i = 0;
 		}	
 	}

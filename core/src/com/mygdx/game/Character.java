@@ -9,6 +9,7 @@ public class Character extends Sprite {
 	private float[] location = new float[4];
 	private boolean alive = true;
 	private boolean[] stuck = new boolean[4];; //N, E, S, E: Directions this array uses to tell if something is that direction
+	private String type = "character";
 	
 	public Character(float x1, float y1, float vx1, float vy1, Texture img){
 		super(img);
@@ -59,6 +60,10 @@ public class Character extends Sprite {
 	
 	public void setAlive(boolean a){
 		alive = a;
+	}
+	
+	public String getType(){
+		return type;
 	}
 	
 	public void makeStuck(char direc){

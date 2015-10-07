@@ -9,6 +9,7 @@ public class Bullet extends Character{
 	
 	public Bullet (float x1, float y1, float vx1, float vy1){
 		super(x1, y1, vx1, vy1, img);
+		this.type = "bullet";
 	}
 	
 	public boolean movement(){
