@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-public class MyGdxGame extends ApplicationAdapter implements ApplicationListener,InputProcessor {
+public class MyGdxGame extends ApplicationAdapter implements ApplicationListener {
 	SpriteBatch batch;
 	
 	public List<Character> characters = new ArrayList<Character>();
@@ -40,6 +40,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     char dir;
     Hero hero;
     MovementController control;
+    
 	@Override
 	public void create () {
 		Gdx.graphics.setDisplayMode(500, 200, false);
@@ -47,7 +48,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		height = Gdx.graphics.getHeight();
 		batch = new SpriteBatch();
 		textureAtlas = new TextureAtlas(Gdx.files.internal("ameeno.pack"));
-		control = new MovementController(characters);
+		control = new MovementController(characters, height, width);
 		//Setting up the hero
 		hero = new Hero(posX, posY,0, 0); 
 		posX = width/2 - hero.getWidth()/2;
@@ -56,7 +57,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		characters.add(hero);
 		
 		animation = new Animation(1/15f, textureAtlas.getRegions());
-		Gdx.input.setInputProcessor(this);
+		//Gdx.input.setInputProcessor(this);
 	}
 	
 	public void dispose() {
@@ -71,9 +72,10 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		move();
-		checkPhys(hero);
-		//shooty();
-		//movement();
+		//checkPhys(hero);
+		control.checkCollision(characters.get(0));
+		
+		
 		control.control();
 		
 		batch.begin();
@@ -93,198 +95,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		}
 	}
 	
-	@Override
-	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
-		/*
-		if(Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)){
-			fast = true;
-		}
-		if(keycode == Keys.LEFT){
-			characters.get(0).setVectorX(-1.0f);
-		}
-		if(keycode == Keys.RIGHT){
-			characters.get(0).setVectorX(1.0f);
-		}
-		if(keycode == Keys.UP){
-			characters.get(0).setVectorY(1.0f);
-		}
-		if(keycode == Keys.DOWN){
-			characters.get(0).setVectorY(-1.0f);
-		}
-		if(keycode == Keys.W){
-			shoot = 'W';
-		}
-		if(keycode == Keys.A){
-			shoot = 'A';
-		}
-		if(keycode == Keys.S){
-			shoot = 'S';
-		}
-		if(keycode == Keys.D){
-			shoot = 'D';
-		}
-		if(fast){
-			moveAmount = 10.0f;
-		}
-		*/
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
-		/*
-		if(Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)){
-			fast = false;
-		}
-		if(keycode == Keys.LEFT){
-			characters.get(0).setVectorX(0);
-		}
-		if(keycode == Keys.RIGHT){
-			characters.get(0).setVectorX(0);
-		}
-		if(keycode == Keys.UP){
-			characters.get(0).setVectorY(0);
-		}
-		if(keycode == Keys.DOWN){
-			characters.get(0).setVectorY(0);
-		}
-		if(!fast){
-			moveAmount = 1.0f;
-		}
-		*/
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
-		System.out.println(screenX + " " + screenY);
-		posX = screenX;
-		posY = Gdx.graphics.getHeight()-screenY;
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	public void shooty(){
-		if(shoot != 'e'){
-			Bullet z;
-			if(shoot == 'W'){
-				z = new Bullet(posX + hero.getWidth()/2, posY + hero.getHeight(), 0f, 10f);
-				characters.add(z);
-				dir = 'n';
-				
-			}
-			if(shoot == 'A'){
-				z = new Bullet(posX, posY + hero.getHeight()/2, -10f, 0f);
-				characters.add(z);
-				dir = 'w';
-				
-			}
-			if(shoot == 'S'){
-				z = new Bullet(posX + hero.getWidth()/2, posY, 0f, -10f);
-				characters.add(z);
-				
-				dir = 's';
-			}
-			if(shoot == 'D'){
-				z = new Bullet(posX + hero.getWidth(), posY + hero.getHeight()/2, 10f, 0f);
-				characters.add(z);
-				
-				dir = 'e';
-			}
-			
-			
-		}
-		
-		shoot = 'e';
-	}
-	/*
-	public void movement() {
-		if(x == 1 && y == 0 && right){
-			posX += moveAmount;
-		}
-		if(x == -1  && y == 0 && left){
-			posX -= moveAmount;
-		}
-		if(y == 1  && x == 0 && up){
-			posY += moveAmount;
-		}
-		if(y == -1  && x == 0 && down){
-			posY -= moveAmount;
-		}
-		if(x == 1 && y == 1){
-			if(right && up){
-				posX += moveAmount;
-				posY += moveAmount;
-			}else if(right && !up){
-				posX += moveAmount;
-			}else if(!right && up){
-				posY += moveAmount;
-			}
-		}
-		if(x == -1  && y == -1){
-			if(left && !down){
-				posX -= moveAmount;
-			}else if(!left && down){
-				posY -= moveAmount;
-			}else if(left && down){
-				posX -= moveAmount;
-				posY -= moveAmount;
-			}
-		}
-		if(x == 1 && y == -1){
-			if(right && !down){
-				posX += moveAmount;
-			}else if(!right && down){
-				posY -= moveAmount;
-			}else if(right && down){
-				posX += moveAmount;
-				posY -= moveAmount;
-			}
-		}
-		if(x == -1 && y == 1){
-			if(left && !up){
-				posX -= moveAmount;
-			}else if(!left && up){
-				posY += moveAmount;
-			}else if(left && up){
-				posX -= moveAmount;
-				posY += moveAmount;
-			}
-		}
-	}*/
 	public void makeBack(){
 		elapsedTime += Gdx.graphics.getDeltaTime();
 		for(int i = 0; i < 500; i += 50){

@@ -14,9 +14,11 @@ public class Bullet extends Character{
 	public boolean movement(){
 		this.setX(this.getX() + this.getVectorX());
 		this.setY(this.getY() + this.getVectorY());
-		
+		setLocation(this.getX(), this.getY());
 		return true;
 	}
+	
+	
 
 	
 	
