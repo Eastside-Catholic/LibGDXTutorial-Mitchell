@@ -144,4 +144,23 @@ public class MovementController {
 			one.unStuck('n');
 		}	
 	}
+	
+	public void checkCollision(Character one, Character two){
+		float[] a = one.getLocation();
+		float[] b = two.getLocation();
+		float Ax1 = a[0];
+		float Ax2 = a[2];
+		float Bx1 = b[0];
+		float Bx2 = b[2];
+		float Ay1 = a[1];
+		float Ay2 = a[3];
+		float By1 = b[1];
+		float By2 = b[3];
+		
+		if(Ax1 <= Bx1 && Ax2 >= Bx2 && Ay2 >= By1){
+			//one.makeStuck('n');
+		}
+		
+		
+	}
 }

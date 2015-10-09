@@ -30,6 +30,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 	char shoot = 'e';
 	int x = 0;
 	int y = 0;
+	int numBadGuys = 1;
 	float moveAmount = 1.0f;
 	boolean fast = false;
 	boolean left = true;
@@ -57,6 +58,11 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		hero.setPosition(posX, posY);
 		characters.add(hero);
 		
+		for(int i = 0; i < numBadGuys; i++){
+			Badguy bad = new Badguy(10, 10, 0, 0);
+			characters.add(bad);
+		}
+		
 		animation = new Animation(1/15f, textureAtlas.getRegions());
 		//Gdx.input.setInputProcessor(this);
 	}
@@ -78,6 +84,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		for(int i = 0; i < characters.size(); i++){
 			control.checkCollision(characters.get(i));
 			
+			for(int j = i + 1; j < characters.size(); j++){
+				control.checkCollision(characters.get(i),characters.get(j));
+			}
 		}
 		
 		checkAlive();
@@ -85,7 +94,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		control.control();
 		
 		batch.begin();
-		makeBack();
+		//makeBack();
 		hero.draw(batch);
 		for(int i = 0; i < characters.size(); i++){
 			Character temp = characters.get(i);
