@@ -19,6 +19,10 @@ public class Bullet extends Character{
 		return true;
 	}
 	
+	public void makeStuck(char a){
+		this.setAlive(false);
+	}
+	
 	
 
 	

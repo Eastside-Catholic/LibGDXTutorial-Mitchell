@@ -11,6 +11,7 @@ public class MovementController {
 	List<Character> characters;
 	float heroX;
 	float heroY;
+	float heroSpeed = 2f;
 	Hero hero;
 	int i;
 	int fireRate = 20;
@@ -27,7 +28,7 @@ public class MovementController {
 	}
 	
 	public void control(){
-		System.out.println(i);
+		//System.out.println(i);
 		hero = (Hero) characters.get(0);
 		heroX = hero.getX();
 		heroY = hero.getY();
@@ -38,17 +39,17 @@ public class MovementController {
 			System.out.println(stuck[i]);
 		}*/
 		if(Gdx.input.isKeyPressed(Keys.LEFT)){
-			hero.setVectorX(-1.0f);
+			hero.setVectorX(-heroSpeed);
 			
 		}
 		if(Gdx.input.isKeyPressed(Keys.RIGHT)){
-			hero.setVectorX(1.0f);
+			hero.setVectorX(heroSpeed);
 		}
 		if(Gdx.input.isKeyPressed(Keys.UP )){
-			hero.setVectorY(1.0f);
+			hero.setVectorY(heroSpeed);
 		}
 		if(Gdx.input.isKeyPressed(Keys.DOWN)){
-			hero.setVectorY(-1.0f);
+			hero.setVectorY(-heroSpeed);
 		}
 		if(!Gdx.input.isKeyPressed(Keys.LEFT) && !Gdx.input.isKeyPressed(Keys.RIGHT) 
 				|| hero.getVectorX() < 0 && stuck[3] || hero.getVectorX() > 0 && stuck[1] ){

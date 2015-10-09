@@ -22,6 +22,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 	SpriteBatch batch;
 	
 	public List<Character> characters = new ArrayList<Character>();
+	
 	TextureAtlas textureAtlas;
 	float posX, posY;
 	Animation animation;
@@ -67,14 +68,19 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
 	@Override
 	public void render () {
-		
+		System.out.println(characters.size());
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		move();
 		//checkPhys(hero);
-		control.checkCollision(characters.get(0));
 		
+		for(int i = 0; i < characters.size(); i++){
+			control.checkCollision(characters.get(i));
+			
+		}
+		
+		checkAlive();
 		
 		control.control();
 		
@@ -96,6 +102,18 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 	}
 	
 	public void checkAlive(){
+		List<String> toKill = new ArrayList<String>();
+		String type;
+		String location;
+		for(int i = 0; i < characters.size(); i++){
+			Character temp = characters.get(i);
+			type = temp.getType();
+			if(!type.equals(hero)){
+				if(!temp.getAlive()){
+					characters.remove(i);
+				}
+			}
+		}
 		
 	}
 	
