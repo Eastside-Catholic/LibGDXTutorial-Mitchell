@@ -10,6 +10,8 @@ public class Character extends Sprite {
 	protected boolean alive = true;
 	private boolean[] stuck = new boolean[4];; //N, E, S, E: Directions this array uses to tell if something is that direction
 	protected String type = "character";
+	private boolean alreadyStuck = false;
+	private float health = 5;
 	
 	public Character(float x1, float y1, float vx1, float vy1, Texture img){
 		super(img);
@@ -82,16 +84,16 @@ public class Character extends Sprite {
 	}
 	
 	public void unStuck(char direc){
-		if(direc == 'n'){
+		if(direc == 'n' && !alreadyStuck){
 			stuck[0] = false;
 		}
-		if(direc == 'e'){
+		if(direc == 'e' && !alreadyStuck){
 			stuck[1] = false;
 		}
-		if(direc == 's'){
+		if(direc == 's' && !alreadyStuck){
 			stuck[2] = false;
 		}
-		if(direc == 'w'){
+		if(direc == 'w' && !alreadyStuck){
 			stuck[3] = false;
 		}	
 	}
@@ -100,6 +102,21 @@ public class Character extends Sprite {
 		return stuck;
 	}
 	
+	public void setAlreadyStuck(boolean a){
+		alreadyStuck = a;
+	}
+	
+	public boolean getAlreadyStuck(){
+		return alreadyStuck;
+	}
+	
+	public void setHealth(float x){
+		health = x;
+	}
+	
+	public float getHealth() {
+		return health;
+	}
 	
 	
 	

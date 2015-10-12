@@ -57,11 +57,19 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		posY =  height/2 - hero.getHeight()/2;
 		hero.setPosition(posX, posY);
 		characters.add(hero);
+		Badguy bad = new Badguy(10, 10, 0, 0);
+		Badguy bad1 = new Badguy(30, 10, 0, 0);
+		Badguy bad2 = new Badguy(50, 10, 0, 0);
+		Badguy bad3 = new Badguy(70, 10, 0, 0);
+		Badguy bad4 = new Badguy(90, 10, 0, 0);
+		Badguy bad5 = new Badguy(110, 10, 0, 0);
+		characters.add(bad);
+		characters.add(bad1);
+		characters.add(bad2);
+		characters.add(bad3);
+		characters.add(bad4);
+		characters.add(bad5);
 		
-		for(int i = 0; i < numBadGuys; i++){
-			Badguy bad = new Badguy(10, 10, 0, 0);
-			characters.add(bad);
-		}
 		
 		animation = new Animation(1/15f, textureAtlas.getRegions());
 		//Gdx.input.setInputProcessor(this);
@@ -81,11 +89,23 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		move();
 		//checkPhys(hero);
 		
+		for(int i = 0; i < characters.size(); i++){//resets the already stuck boolean
+			characters.get(i).setAlreadyStuck(false);
+		}
 		for(int i = 0; i < characters.size(); i++){
-			control.checkCollision(characters.get(i));
-			
+			Character temp = characters.get(i);
+		
+			Boolean a = false;
+			a = control.checkCollision(temp);
+			if(a){
+				temp.setAlreadyStuck(a);
+			}
 			for(int j = i + 1; j < characters.size(); j++){
-				control.checkCollision(characters.get(i),characters.get(j));
+				a = control.checkCollision(temp,characters.get(j));
+				if(a){
+					temp.setAlreadyStuck(a);
+					characters.get(j).setAlreadyStuck(a);
+				}
 			}
 		}
 		
@@ -117,7 +137,10 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 		for(int i = 0; i < characters.size(); i++){
 			Character temp = characters.get(i);
 			type = temp.getType();
-			if(!type.equals(hero)){
+			if(temp.getHealth() == 0){
+				temp.setAlive(false);
+			}
+			if(!type.equals("hero")){
 				if(!temp.getAlive()){
 					characters.remove(i);
 				}
@@ -134,39 +157,4 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 			}
 		}
 	}
-	public void checkPhys(Sprite sprite){
-		for(int i = 0; i < characters.size(); i++){
-			Character temp = characters.get(i);
-			if(temp.getX() < 0 || temp.getX() > width || temp.getY() < 0 || temp.getY() > height){
-				characters.remove(i);
-			}
-			
-		}
-		
-		float ex = sprite.getX();
-		float why = sprite.getY();
-		if(ex <= 0){
-			left = false;
-		}else{
-			left = true;
-		}
-		if(ex >= width - sprite.getWidth()){
-			right = false;
-		}else{
-			right = true;
-		}
-		if(why <= 0){
-			down = false;
-		}else{
-			down = true;
-		}
-		if(why >= height - sprite.getHeight()){
-			up = false;
-		}else{
-			up = true;
-		}
-	}
-	
-
-	
 }

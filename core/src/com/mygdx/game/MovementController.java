@@ -6,6 +6,7 @@ import javax.xml.stream.events.Characters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.GL20;
 
 public class MovementController {
 	List<Character> characters;
@@ -60,7 +61,7 @@ public class MovementController {
 			hero.setVectorY(0);
 		}
 		
-		if(Gdx.input.isKeyPressed(Keys.W)){
+		if(Gdx.input.isKeyPressed(Keys.W) && !Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)){//Shoot N
 			if(i > 0 && i <= fireRate){
 				i++;
 			}else if(i >fireRate){
@@ -72,7 +73,19 @@ public class MovementController {
 			}
 		}
 		
-		if(Gdx.input.isKeyPressed(Keys.A)){
+		if(Gdx.input.isKeyPressed(Keys.W) && Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)){//Shoot NW
+			if(i > 0 && i <= fireRate){
+				i++;
+			}else if(i >fireRate){
+				i = 0;
+			}else{
+				z = new Bullet(heroX - 13,heroY + hero.getHeight(), -10f, 10f);
+				characters.add(z);
+				i++;
+			}
+		}
+		
+		if(Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.W) && !Gdx.input.isKeyPressed(Keys.S)){ //Shoot west
 			if(i > 0 && i <= fireRate){
 				i++;
 			}else if(i >fireRate){
@@ -83,8 +96,20 @@ public class MovementController {
 				i++;
 			}
 		}
+		
+		if(Gdx.input.isKeyPressed(Keys.A) && Gdx.input.isKeyPressed(Keys.S) && !Gdx.input.isKeyPressed(Keys.W)){ //Shoot SW
+			if(i > 0 && i <= fireRate){
+				i++;
+			}else if(i >fireRate){
+				i = 0;
+			}else{
+				z = new Bullet(heroX - 13, heroY - 12, -10.0f, -10.0f);
+				characters.add(z);
+				i++;
+			}
+		}
 				
-		if(Gdx.input.isKeyPressed(Keys.S)){
+		if(Gdx.input.isKeyPressed(Keys.S) && !Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)){//Shoot S
 			if(i > 0 && i <= fireRate){
 				i++;
 			}else if(i > fireRate){
@@ -96,7 +121,19 @@ public class MovementController {
 			}
 		}
 		
-		if(Gdx.input.isKeyPressed(Keys.D)){
+		if(Gdx.input.isKeyPressed(Keys.S) && Gdx.input.isKeyPressed(Keys.D) && !Gdx.input.isKeyPressed(Keys.A)){ //Shoot SE
+			if(i > 0 && i <= fireRate){
+				i++;
+			}else if(i >fireRate){
+				i = 0;
+			}else{
+				z = new Bullet(heroX + hero.getWidth(), heroY - 12, 10.0f, -10.0f);
+				characters.add(z);
+				i++;
+			}
+		}
+		
+		if(Gdx.input.isKeyPressed(Keys.D) && !Gdx.input.isKeyPressed(Keys.S) && !Gdx.input.isKeyPressed(Keys.W)){ //Shoot East
 			if(i > 0 && i <= fireRate){
 				i++;
 			}else if(i > fireRate){
@@ -108,44 +145,66 @@ public class MovementController {
 			}
 		}
 		
+		if(Gdx.input.isKeyPressed(Keys.W) && Gdx.input.isKeyPressed(Keys.D) && !Gdx.input.isKeyPressed(Keys.A)){//Shoot NE
+			if(i > 0 && i <= fireRate){
+				i++;
+			}else if(i >fireRate){
+				i = 0;
+			}else{
+				z = new Bullet(heroX + hero.getWidth(),heroY + hero.getHeight(), 10f, 10f);
+				characters.add(z);
+				i++;
+			}
+		}
+		
 		if(!Gdx.input.isKeyPressed(Keys.W) && !Gdx.input.isKeyPressed(Keys.S) && 
 				!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)){
 			i = 0;
 		}	
 	}
 	
-	public void checkCollision(Character one){
+	public boolean checkCollision(Character one){
 		float[] locationOne = one.getLocation();
 		//System.out.println("width " + width + " height " + height);
 		float x1 = locationOne[0];
 		float y1 = locationOne[1];
 		float x2 = locationOne[2];
 		float y2 = locationOne[3];
+		boolean preStuck = one.getAlreadyStuck();
 		//System.out.println(x1 + " " + y1 + " " + x2 + " " + y2);
+		boolean a = false;
 		
 		if(x1 < 0){
 			one.makeStuck('w');
-		}else{
+			a = true;
+		}else if(!preStuck){
 			one.unStuck('w');
+			
 		}
 		if(x2 > width){
 			one.makeStuck('e');
-		}else{
+			a = true;
+		}else if(!preStuck){
 			one.unStuck('e');
+			
 		}
 		if(y1 < 0){
 			one.makeStuck('s');
-		}else{
+			a = true;
+		}else if(!preStuck){
 			one.unStuck('s');
 		}
 		if(y2 > height){
 			one.makeStuck('n');
-		}else{
+			a = true;
+		}else if(!preStuck){
 			one.unStuck('n');
 		}	
+		
+		return a;
 	}
 	
-	public void checkCollision(Character one, Character two){
+	public boolean checkCollision(Character one, Character two){
 		float[] a = one.getLocation();
 		float[] b = two.getLocation();
 		float Ax1 = a[0];
@@ -156,11 +215,39 @@ public class MovementController {
 		float Ay2 = a[3];
 		float By1 = b[1];
 		float By2 = b[3];
+		boolean collide = false;
 		
-		if(Ax1 <= Bx1 && Ax2 >= Bx2 && Ay2 >= By1){
-			//one.makeStuck('n');
+		
+		if((Ay2 >= By1 && Ay1 + one.getHeight()/2 <= By1) && (Bx1 >= Ax1 && Bx1 <= Ax2 || Bx2 >=Ax1 && Bx2 <= Ax2)){//Collides from north
+			one.makeStuck('n');
+			two.makeStuck('s');
+			collide = true;
+		}else if((Ax2 >= Bx1 && Ax1 + one.getWidth()/2 <= Bx1) && (By1 >= Ay1 && By1 <= Ay2 || By2 >=Ay1 && By2 <= Ay2)){//Collides from east
+			one.makeStuck('e');
+			two.makeStuck('w');
+			collide = true;
+		}else if((Ay2 - one.getHeight()/2 >= By2 && Ay1 <= By2) && (Bx1 >= Ax1 && Bx1 <= Ax2 || Bx2 >=Ax1 && Bx2 <= Ax2)){//Collides from south
+			one.makeStuck('s');
+			two.makeStuck('n');
+			collide = true;
+		}else if((Ax1 + one.getWidth()/2 >= Bx2 && Ax1  <= Bx2) && (By1 >= Ay1 && By1 <= Ay2 || By2 >=Ay1 && By2 <= Ay2)){//Collides from west
+			one.makeStuck('w');
+			two.makeStuck('e');
+			collide = true;
+		}else{
+			collide = false;
 		}
 		
+		if(two.getType().equals("bullet") && collide){
+			one.setHealth(one.getHealth() - 1);
+		}
 		
+		if(two.getType().equals("badguy") && one.getType().equals("hero") && collide){
+			one.setHealth(one.getHealth() - 1);
+			Gdx.gl.glClearColor(256, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		}
+		
+		return collide;
 	}
 }
