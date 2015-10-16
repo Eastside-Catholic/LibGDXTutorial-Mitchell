@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 public class Badguy extends Character{
 	
 	private static Texture img = new Texture(Gdx.files.internal("Badguy.png"));
+	public static Texture damaged = new Texture(Gdx.files.internal("DamagedBadguy.png"));
 	public Badguy(float x1, float y1, float vx1, float vy1) {
 		super(x1, y1, vx1, vy1, img);
 		this.type = "badguy";
@@ -89,6 +90,10 @@ public class Badguy extends Character{
 		}
 		
 	    return "error";
+	}
+	
+	public void setDamaged(){
+		this.setTexture(damaged);
 	}
 
 }

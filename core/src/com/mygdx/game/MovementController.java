@@ -240,6 +240,9 @@ public class MovementController {
 		
 		if(two.getType().equals("bullet") && collide){
 			one.setHealth(one.getHealth() - 1);
+			if(one.getType().equals("badguy")){
+				one.setDamaged();
+			}
 		}
 		
 		if(two.getType().equals("badguy") && one.getType().equals("hero") && collide){

@@ -118,6 +118,10 @@ public class Character extends Sprite {
 		return health;
 	}
 	
+	public void setDamaged(){
+		
+	}
+	
 	
 	
 
