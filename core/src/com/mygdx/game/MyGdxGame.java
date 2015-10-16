@@ -19,142 +19,222 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class MyGdxGame extends ApplicationAdapter implements ApplicationListener {
-	SpriteBatch batch;
 	
+	public SpriteBatch batch;
 	public List<Character> characters = new ArrayList<Character>();
-	
-	TextureAtlas textureAtlas;
-	float posX, posY;
-	Animation animation;
-	float elapsedTime = 0;
-	char shoot = 'e';
-	int x = 0;
-	int y = 0;
-	int numBadGuys = 1;
-	float moveAmount = 1.0f;
-	boolean fast = false;
-	boolean left = true;
-	boolean right = true;
-	boolean down = true;
-	boolean up = true;
-	float width;
-    float height;
-    char dir;
-    Hero hero;
-    MovementController control;
-    
+	public int numStartBadguys = 10;
+    public MovementController control;
+    public int loops = 0;
+    public int badguyCount;
+    public int score = 0;
+    public int highScore = 0;
+    public boolean hero = true;
+    BitmapFont font;
 	@Override
-	public void create () {
+	public void create () { //Sets up initial screen, with hero, enemies, etc.
 		Gdx.graphics.setDisplayMode(800, 400, false);
-		width = Gdx.graphics.getWidth();
-		height = Gdx.graphics.getHeight();
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		
 		batch = new SpriteBatch();
-		textureAtlas = new TextureAtlas(Gdx.files.internal("ameeno.pack"));
+		font = new BitmapFont();
 		control = new MovementController(characters, height, width);
 		//Setting up the hero
-		hero = new Hero(posX, posY,0, 0); 
-		posX = width/2 - hero.getWidth()/2;
-		posY =  height/2 - hero.getHeight()/2;
+		Hero hero = new Hero(0,0,0, 0); 
+		float posX = width/2 - hero.getWidth()/2;
+		float posY =  height/2 - hero.getHeight()/2;
 		hero.setPosition(posX, posY);
 		characters.add(hero);
-		Badguy bad = new Badguy(10, 10, 0, 0);
-		Badguy bad1 = new Badguy(30, 10, 0, 0);
-		Badguy bad2 = new Badguy(50, 10, 0, 0);
-		Badguy bad3 = new Badguy(70, 10, 0, 0);
-		Badguy bad4 = new Badguy(90, 10, 0, 0);
-		Badguy bad5 = new Badguy(110, 10, 0, 0);
-		characters.add(bad);
-		characters.add(bad1);
-		characters.add(bad2);
-		characters.add(bad3);
-		characters.add(bad4);
-		characters.add(bad5);
+		for(int i = 0; i < numStartBadguys; i++){
+			spawnBadguy();
+		}
 		
-		
-		animation = new Animation(1/15f, textureAtlas.getRegions());
-		//Gdx.input.setInputProcessor(this);
 	}
 	
-	public void dispose() {
+	public void dispose() {//called when program ends
 		batch.dispose();
-		textureAtlas.dispose();
 	}
 
 	@Override
-	public void render () {
-		System.out.println(characters.size());
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+	public void render () {//repeatedly called
+		System.out.println(score);
+		Gdx.gl.glClearColor(0, 0, 0, 1);//Setting Background to Black
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		move();
-		//checkPhys(hero);
 		
-		for(int i = 0; i < characters.size(); i++){//resets the already stuck boolean
-			characters.get(i).setAlreadyStuck(false);
-		}
-		for(int i = 0; i < characters.size(); i++){
-			Character temp = characters.get(i);
-		
-			Boolean a = false;
-			a = control.checkCollision(temp);
-			if(a){
-				temp.setAlreadyStuck(a);
-			}
-			for(int j = i + 1; j < characters.size(); j++){
-				a = control.checkCollision(temp,characters.get(j));
-				if(a){
-					temp.setAlreadyStuck(a);
-					characters.get(j).setAlreadyStuck(a);
-				}
-			}
-		}
+		checkCollisions();
 		
 		checkAlive();
 		
+		hScore();
+		
 		control.control();
 		
-		batch.begin();
-		//makeBack();
-		hero.draw(batch);
-		for(int i = 0; i < characters.size(); i++){
-			Character temp = characters.get(i);
-			temp.draw(batch);
+		draw();
+		
+		if(loops % 500 == 0){//spawns new enemy every 500 loops
+			spawnBadguy();
 		}
-		batch.end();
+		
+		if(badguyCount == 0){//if no badguys then spawn in more and give 1000 pts
+			score += 1000;
+			numStartBadguys += 5;
+			for(int i = 0; i < numStartBadguys; i++){
+				spawnBadguy();
+			}
+		}
+		
+		if(!hero){
+			reset();
+		}
+		
+		loops ++;
 	}
 	
 	public void move(){
+		//Handles movement
 		for(int i = 0; i < characters.size(); i++){
 			Character temp = characters.get(i);
 			temp.movement();
 		}
 	}
 	
+	public void checkCollisions(){
+		
+		for(int i = 0; i < characters.size(); i++){//resets the already stuck boolean
+			characters.get(i).setAlreadyStuck(false);
+		}
+		for(int i = 0; i < characters.size(); i++){//Goes through each Character
+			Character temp = characters.get(i);
+		
+			Boolean a = false;
+			a = control.checkCollision(temp);//Checks if collides with wall
+			
+			if(a){
+				temp.setAlreadyStuck(a);
+			}
+			
+			for(int j = i + 1; j < characters.size(); j++){
+				
+				a = control.checkCollision(temp,characters.get(j));
+				
+				if(a){
+					temp.setAlreadyStuck(a);
+					characters.get(j).setAlreadyStuck(a);
+				}
+			}
+		}
+	}
+	
 	public void checkAlive(){
-		List<String> toKill = new ArrayList<String>();
 		String type;
-		String location;
-		for(int i = 0; i < characters.size(); i++){
+		int tempCount = 0;//used to count number of badguys
+		for(int i = 0; i < characters.size(); i++){//Looks through every character
+			
 			Character temp = characters.get(i);
 			type = temp.getType();
-			if(temp.getHealth() == 0){
+			
+			if(type.equals("badguy")){
+				tempCount++;
+			}
+			if(temp.getHealth() <= 0){//Checks Health, if <1, tells it that its dead
 				temp.setAlive(false);
 			}
+			
 			if(!type.equals("hero")){
 				if(!temp.getAlive()){
 					characters.remove(i);
+					if(type.equals("badguy")){
+						score += 100;
+						tempCount--;
+					}
+				}
+			}else{
+				if(!temp.getAlive()){
+					float[] locat = characters.get(i).getLocation();
+					characters.remove(i);
+					Dead dead = new Dead(locat[0], locat[1]);
+					characters.add(i, dead);
+					hero = false;
 				}
 			}
 		}
 		
+		if(tempCount != badguyCount){//if the num of Badguys is different, update it
+			badguyCount = tempCount;
+		}
+		
 	}
 	
-	public void makeBack(){
-		elapsedTime += Gdx.graphics.getDeltaTime();
-		for(int i = 0; i < width; i += 50){
-			for(int j = 0; j < height; j+= 50){
-				 batch.draw(animation.getKeyFrame(elapsedTime, true), i, j);		
-			}
+	public void draw(){//used to draw characters on screen
+		batch.begin();
+		
+		for(int i = 0; i < characters.size(); i++){//Draws every character to screen
+			Character temp = characters.get(i);
+			temp.draw(batch);
+		}
+		
+		drawText();
+		batch.end();
+	}
+	
+	public void spawnBadguy(){
+		int rand = (int)(Math.random()*4);//Picks a side for the badguy to spawn
+		
+		if(rand == 0){
+			Badguy bad = new Badguy(0, (int)(Math.random()*390), 0, 0);
+			characters.add(bad);
+		}else if(rand == 1){
+			Badguy bad = new Badguy(790, (int)(Math.random()*390), 0, 0);
+			characters.add(bad);			
+		}else if(rand == 2){
+			Badguy bad = new Badguy((int)(Math.random()*780), 0, 0, 0);
+			characters.add(bad);			
+		}else{
+			Badguy bad = new Badguy((int)(Math.random()*780), 390, 0, 0);
+			characters.add(bad);			
 		}
 	}
+	
+	public void drawText(){
+		int live;
+		String score = ("Score: " + this.score);
+		String hiscore = ("High Score: " + this.highScore);
+		if(characters.get(0).getType().equals("hero")){//if the hero is removed from screen, then it assumes lives 0
+			live = (int)characters.get(0).getHealth();
+		}else{
+			live = 0;
+		}
+		String lives = ("Lives: " + live);
+		int sLength = score.length();
+		int hLength = hiscore.length();
+		int lLength = lives.length();
+		font.draw(batch, hiscore , 802 - (hLength*7), 395);
+		font.draw(batch, score , 800 - (sLength*7), 375);
+		font.draw(batch, lives, 806 - (lLength*7), 355);
+		if(!hero){
+			font.draw(batch, "You are dead." , 357, 220);
+			font.draw(batch, "Press enter to try again!" , 330, 200);
+		}
+	}
+	
+	public void hScore(){
+		if(score > highScore){
+			highScore=score;
+		}
+	}
+	public void reset(){
+		if(Gdx.input.isKeyPressed(Keys.ENTER)){
+			hero = true;
+		}
+		if(hero){
+			score = 0;
+			numStartBadguys = 10;
+			loops = 0;
+			characters.removeAll(characters);
+			create();
+		}
+	}
+	
 }

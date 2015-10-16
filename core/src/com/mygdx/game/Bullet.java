@@ -19,7 +19,7 @@ public class Bullet extends Character{
 		return true;
 	}
 	
-	public void makeStuck(char a){
+	public void makeStuck(char a){//If the bullet collides with something, it is set for removal
 		this.setAlive(false);
 	}
 	

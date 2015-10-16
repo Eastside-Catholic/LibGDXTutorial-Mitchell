@@ -68,7 +68,7 @@ public class Character extends Sprite {
 		return type;
 	}
 	
-	public void makeStuck(char direc){
+	public void makeStuck(char direc){//tells chracter that a certain direction is blocked
 		if(direc == 'n'){
 			stuck[0] = true;
 		}
@@ -83,7 +83,7 @@ public class Character extends Sprite {
 		}	
 	}
 	
-	public void unStuck(char direc){
+	public void unStuck(char direc){//tells a character that a side is no longer stuck
 		if(direc == 'n' && !alreadyStuck){
 			stuck[0] = false;
 		}
@@ -102,7 +102,7 @@ public class Character extends Sprite {
 		return stuck;
 	}
 	
-	public void setAlreadyStuck(boolean a){
+	public void setAlreadyStuck(boolean a){//used to tell a character that it is already stuck somewhere, and prevents it from unstucking it if is still in collission loop
 		alreadyStuck = a;
 	}
 	

@@ -10,10 +10,9 @@ public class Hero extends Character {
 		super(x1, y1, vx1, vy1, img);
 		this.type = "hero";
 		this.setHealth(5f);
-		// TODO Auto-generated constructor stub
 	}
 	
-	public boolean movement(){
+	public boolean movement(){//moves character based on vectors
 		this.setX(this.getX() + this.getVectorX());
 		this.setY(this.getY() + this.getVectorY());
 		setLocation(this.getX(), this.getY());
